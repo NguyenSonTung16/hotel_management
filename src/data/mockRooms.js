@@ -1,0 +1,32 @@
+export const MOCK_ROOMS = [
+  {
+    id: 1,
+    name: "Deluxe Ocean View",
+    price: 150,
+    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=500",
+    size: "45m²",
+    bed: "King Bed",
+    view: "Ocean View",
+    capacity: 2,
+  },
+  {
+    id: 2,
+    name: "Superior Garden",
+    price: 120,
+    image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=500",
+    size: "38m²",
+    bed: "Queen Bed",
+    view: "Garden View",
+    capacity: 2,
+  },
+  {
+    id: 3,
+    name: "Family Suite",
+    price: 250,
+    image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=500",
+    size: "60m²",
+    bed: "2 King Beds",
+    view: "City View",
+    capacity: 4,
+  },
+];
