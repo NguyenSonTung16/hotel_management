@@ -1,97 +1,76 @@
 import React from "react";
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  SafeAreaView, 
-  ScrollView 
-} from "react-native";
-// Import hàm tính ngày (đảm bảo đường dẫn đúng với cấu trúc dự án của bạn)
-import { calculateNights } from "../utils/calculateNights"; 
+import { View, StyleSheet, SafeAreaView, ScrollView, Platform, StatusBar } from "react-native";
+import AppText from "../components/common/AppText";
+import AppButton from "../components/common/AppButton";
+import { calculateNights } from "../utils/calculateNights";
+import { COLORS, FONTS, SIZES, SPACING, SHADOWS } from "../constants/hotelTheme";
 
 export default function BookingSuccessScreen({ booking, onReset }) {
-  // Lấy dữ liệu từ prop booking
   const { room, formData } = booking;
-  
-  // --- TÍNH TOÁN LẠI TỔNG TIỀN ---
-  // 1. Tính số đêm lưu trú dựa trên ngày check-in/check-out
-  const nights = calculateNights(formData.checkIn, formData.checkOut);
-  
-  // 2. Tính tổng tiền = Giá phòng * Số đêm
-  // (Đảm bảo ít nhất là 1 đêm để tránh hiển thị $0 nếu lỗi)
-  const finalTotalPrice = (nights > 0 ? nights : 1) * room.price;
 
-  // Tạo mã booking giả lập
+  const nights = calculateNights(formData.checkIn, formData.checkOut);
+  const finalTotalPrice = (nights > 0 ? nights : 1) * room.price;
   const mockBookingID = "BK" + Math.random().toString(36).substr(2, 9).toUpperCase();
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        
-        {/* --- HEADER ICON & TEXT --- */}
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
           <View style={styles.iconCircle}>
-            <Text style={styles.checkMark}>✓</Text>
+            <AppText style={styles.checkMark}>✓</AppText>
           </View>
-          <Text style={styles.title}>Booking Confirmed!</Text>
-          <Text style={styles.subtitle}>Your reservation has been successfully placed</Text>
+          <AppText variant="title" align="center" style={styles.title}>Booking Confirmed!</AppText>
+          <AppText variant="caption" align="center" color={COLORS.textLight} style={styles.subtitle}>
+            Your reservation has been successfully placed
+          </AppText>
         </View>
 
-        {/* --- DETAILS CARD --- */}
         <View style={styles.card}>
-          {/* Row: Booking ID */}
           <View style={styles.row}>
-            <Text style={styles.label}>Booking ID:</Text>
-            <Text style={styles.valueBlue}>{mockBookingID}</Text>
+            <AppText style={styles.label}>Booking ID:</AppText>
+            <AppText style={styles.valueAccent}>{mockBookingID}</AppText>
           </View>
 
-          {/* Row: Guest */}
           <View style={styles.row}>
-            <Text style={styles.label}>Guest:</Text>
-            <Text style={styles.value}>{formData?.name || "Guest"}</Text>
+            <AppText style={styles.label}>Guest:</AppText>
+            <AppText style={styles.value}>{formData?.name || "Guest"}</AppText>
           </View>
 
-          {/* Row: Room */}
           <View style={styles.row}>
-            <Text style={styles.label}>Room:</Text>
-            <Text style={styles.value} numberOfLines={1}>{room?.name || "Room Name"}</Text>
+            <AppText style={styles.label}>Room:</AppText>
+            <AppText style={styles.value} numberOfLines={1}>{room?.name || "Room Name"}</AppText>
           </View>
 
-          {/* Row: Check-in */}
           <View style={styles.row}>
-            <Text style={styles.label}>Check-in:</Text>
-            <Text style={styles.value}>{formData?.checkIn || "TBD"}</Text>
+            <AppText style={styles.label}>Check-in:</AppText>
+            <AppText style={styles.value}>{formData?.checkIn || "TBD"}</AppText>
           </View>
 
-          {/* Row: Check-out */}
           <View style={styles.row}>
-            <Text style={styles.label}>Check-out:</Text>
-            <Text style={styles.value}>{formData?.checkOut || "TBD"}</Text>
-          </View>
-          
-           {/* Row: Duration (Thêm dòng này để rõ ràng hơn - Tùy chọn) */}
-           <View style={styles.row}>
-            <Text style={styles.label}>Duration:</Text>
-            <Text style={styles.value}>{nights} night(s)</Text>
+            <AppText style={styles.label}>Check-out:</AppText>
+            <AppText style={styles.value}>{formData?.checkOut || "TBD"}</AppText>
           </View>
 
-          {/* Divider line */}
+          <View style={styles.row}>
+            <AppText style={styles.label}>Duration:</AppText>
+            <AppText style={styles.value}>{nights} night(s)</AppText>
+          </View>
+
           <View style={styles.divider} />
 
-          {/* Row: Total */}
           <View style={styles.row}>
-            <Text style={styles.label}>Total:</Text>
-            {/* Sử dụng biến finalTotalPrice vừa tính toán */}
-            <Text style={styles.totalPrice}>${finalTotalPrice}</Text>
+            <AppText style={styles.label}>Total:</AppText>
+            <AppText style={styles.totalPrice}>${finalTotalPrice}</AppText>
           </View>
         </View>
 
-        {/* --- ACTION BUTTONS --- */}
         <View style={styles.buttonGroup}>
-          <TouchableOpacity style={styles.outlineButton} onPress={onReset}>
-            <Text style={styles.outlineButtonText}>Book Another Room</Text>
-          </TouchableOpacity>
+          <AppButton
+            title="Book Another Room"
+            onPress={onReset}
+            style={styles.outlineButton}
+            textStyle={styles.outlineButtonText}
+          />
         </View>
 
       </ScrollView>
@@ -102,101 +81,92 @@ export default function BookingSuccessScreen({ booking, onReset }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
-    padding: 24,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    paddingTop: SPACING.xl + (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0),
     alignItems: "center",
+    gap: SPACING.lg,
   },
-  
-  // Header Styles
   headerContainer: {
     alignItems: "center",
-    marginBottom: 30,
-    marginTop: 20,
+    gap: SPACING.sm,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#DCFCE7", 
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: COLORS.primaryLight,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 16,
+    ...SHADOWS.light,
   },
   checkMark: {
-    fontSize: 40,
-    color: "#22C55E", 
-    fontWeight: "bold",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1F2937",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
+    fontSize: 42,
+    lineHeight: 44,
+    fontWeight: "700",
+    color: COLORS.success,
     textAlign: "center",
   },
-
-  // Card Styles
+  title: {
+    color: COLORS.textDark,
+  },
+  subtitle: {
+    maxWidth: "85%",
+  },
   card: {
     width: "100%",
-    backgroundColor: "#F9FAFB", 
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 30,
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.radius,
+    padding: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    ...SHADOWS.medium,
+    gap: SPACING.sm,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
+    alignItems: "center",
   },
   label: {
-    fontSize: 14,
-    color: "#6B7280",
+    ...FONTS.body4,
+    color: COLORS.textLight,
+    marginRight: SPACING.sm,
   },
   value: {
-    fontSize: 14,
+    ...FONTS.body3,
+    color: COLORS.textDark,
     fontWeight: "600",
-    color: "#111827",
     maxWidth: "60%",
     textAlign: "right",
   },
-  valueBlue: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#2563EB",
+  valueAccent: {
+    ...FONTS.body3,
+    color: COLORS.primary,
+    fontWeight: "700",
   },
   divider: {
     height: 1,
-    backgroundColor: "#E5E7EB",
-    marginVertical: 12,
+    backgroundColor: COLORS.border,
+    marginVertical: SPACING.xs,
   },
   totalPrice: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2563EB",
+    ...FONTS.priceSmall,
   },
-
-  // Button Styles
   buttonGroup: {
     width: "100%",
-    gap: 12, 
   },
   outlineButton: {
-    backgroundColor: "#fff",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: "#2563EB",
+    borderColor: COLORS.primary,
+    ...SHADOWS.light,
   },
   outlineButtonText: {
-    color: "#2563EB",
-    fontSize: 16,
-    fontWeight: "600",
+    color: COLORS.primary,
+    fontWeight: "700",
   },
 });

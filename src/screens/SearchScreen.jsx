@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
     View,
-    Text,
-    TextInput,
     TouchableOpacity,
     StyleSheet,
     Image,
@@ -14,6 +12,10 @@ import {
 } from "react-native";
 
 import { MOCK_ROOMS } from "../data/mockRooms";
+import AppText from "../components/common/AppText";
+import AppButton from "../components/common/AppButton";
+import AppInput from "../components/common/AppInput";
+import { COLORS, SIZES, FONTS, SHADOWS, SPACING } from "../constants/hotelTheme";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = (width - 40 - 15) / 2;
@@ -68,8 +70,8 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
             {/* Header */}
             <View style={styles.header}>
                 <View style={styles.headerContent}>
-                    <Text style={styles.headerTitle}>Find Your Perfect Room</Text>
-                    <Text style={styles.headerSubtitle}>Welcome, {user.name}</Text>
+                    <AppText variant="title" color={COLORS.white}>Find Your Perfect Room</AppText>
+                    <AppText variant="caption" color={COLORS.primaryLight}>Welcome, {user.name}</AppText>
                 </View>
             </View>
 
@@ -78,18 +80,12 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                 {/* --- SEARCH CARD --- */}
                 <View style={styles.searchCard}>
                     {/* Search Input (Tìm theo tên) */}
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Room Name</Text>
-                        <TextInput
-                            placeholder="Nhập tên phòng..."
-                            value={searchQuery}
-                            onChangeText={setSearchQuery} // Cập nhật state tìm kiếm khi gõ
-                            style={styles.mainInput}
-                            placeholderTextColor="#9CA3AF"
-                        />
-                    </View>
-
-
+                    <AppInput
+                        label="Room Name"
+                        placeholder="Nhập tên phòng..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
 
                     {/* Capacity Row */}
                     <View style={[styles.row, { marginTop: 15, zIndex: 100 }]}>
@@ -102,7 +98,7 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                 }
                             ]}
                         >
-                            <Text style={styles.label}>Capacity</Text>
+                            <AppText variant="caption" style={styles.label}>Capacity</AppText>
                             <TouchableOpacity
                                 style={styles.dropdown}
                                 onPress={() => {
@@ -110,8 +106,8 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                     setShowPriceDropdown(false);
                                 }}
                             >
-                                <Text style={styles.dropdownInput}>{capacity || "Select capacity"}</Text>
-                                <Text style={styles.icon}>▼</Text>
+                                <AppText style={styles.dropdownInput}>{capacity || "Select capacity"}</AppText>
+                                <AppText style={styles.icon}>▼</AppText>
                             </TouchableOpacity>
 
                             {showCapacityDropdown && (
@@ -125,7 +121,7 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                                 setShowCapacityDropdown(false);
                                             }}
                                         >
-                                            <Text style={styles.dropdownItemText}>{c}</Text>
+                                            <AppText style={styles.dropdownItemText}>{c}</AppText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -141,7 +137,7 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                 }
                             ]}
                         >
-                            <Text style={styles.label}>Price Range</Text>
+                            <AppText variant="caption" style={styles.label}>Price Range</AppText>
                             <TouchableOpacity
                                 style={styles.dropdown}
                                 onPress={() => {
@@ -149,8 +145,8 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                     setShowCapacityDropdown(false);
                                 }}
                             >
-                                <Text style={styles.dropdownInput}>{priceRange || "Select range"}</Text>
-                                <Text style={styles.icon}>▼</Text>
+                                <AppText style={styles.dropdownInput}>{priceRange || "Select range"}</AppText>
+                                <AppText style={styles.icon}>▼</AppText>
                             </TouchableOpacity>
 
                             {showPriceDropdown && (
@@ -164,7 +160,7 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                                 setShowPriceDropdown(false);
                                             }}
                                         >
-                                            <Text style={styles.dropdownItemText}>{r}</Text>
+                                            <AppText style={styles.dropdownItemText}>{r}</AppText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -176,7 +172,7 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                 </View>
 
                 {/* --- ROOM LIST --- */}
-                <Text style={styles.sectionTitle}>Recommended Rooms</Text>
+                <AppText variant="subtitle" style={styles.sectionTitle}>Recommended Rooms</AppText>
                 {filteredRooms.length > 0 ? (
                     <View style={styles.gridContainer}>
                         {filteredRooms.map((room) => (
@@ -184,28 +180,29 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                                 <Image source={{ uri: room.image }} style={styles.roomImage} />
 
                                 <View style={styles.roomContent}>
-                                    <Text style={styles.roomName} numberOfLines={1}>
+                                    <AppText variant="body" style={styles.roomName} numberOfLines={1}>
                                         {room.name}
-                                    </Text>
+                                    </AppText>
 
                                     <View style={styles.roomMetaContainer}>
-                                        <Text style={styles.metaText}>📍 {room.size}</Text>
-                                        <Text style={styles.metaText}>🛏️ {room.bed}</Text>
-                                        <Text style={styles.metaText}>👁️ {room.view}</Text>
+                                        <AppText variant="caption" color={COLORS.textLight}>📍 {room.size}</AppText>
+                                        <AppText variant="caption" color={COLORS.textLight}>🛏️ {room.bed}</AppText>
+                                        <AppText variant="caption" color={COLORS.textLight}>👁️ {room.view}</AppText>
                                     </View>
 
                                     <View style={styles.footerRow}>
-                                        <Text style={styles.price}>
-                                            ${room.price}
-                                            <Text style={styles.perNight}>/night</Text>
-                                        </Text>
+                                        <View>
+                                            <AppText style={styles.price}>
+                                                ${room.price}
+                                            </AppText>
+                                            <AppText variant="caption" color={COLORS.textLight}>/night</AppText>
+                                        </View>
 
-                                        <TouchableOpacity
-                                            style={styles.selectButton}
+                                        <AppButton
+                                            title="Select"
                                             onPress={() => onSelectRoom && onSelectRoom(room, { capacity })}
-                                        >
-                                            <Text style={styles.selectButtonText}>Select</Text>
-                                        </TouchableOpacity>
+                                            style={styles.selectButton}
+                                        />
                                     </View>
                                 </View>
                             </View>
@@ -214,9 +211,9 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
                 ) : (
                     // --- UI KHI KHÔNG TÌM THẤY PHÒNG ---
                     <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyIcon}>🔍</Text>
-                        <Text style={styles.emptyText}>Phòng không tồn tại</Text>
-                        <Text style={styles.emptySubText}>Vui lòng thử từ khóa khác</Text>
+                        <AppText style={styles.emptyIcon}>🔍</AppText>
+                        <AppText variant="body" style={styles.emptyText}>Phòng không tồn tại</AppText>
+                        <AppText variant="caption" color={COLORS.textLight}>Vui lòng thử từ khóa khác</AppText>
                     </View>
                 )}
             </ScrollView>
@@ -225,97 +222,108 @@ export default function SearchScreen({ user = { name: "Admin User" }, onSelectRo
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#F9FAFB" },
+    container: { flex: 1, backgroundColor: COLORS.background },
     header: {
-        backgroundColor: "#2563EB",
+        backgroundColor: COLORS.primary,
         height: 150,
-        paddingHorizontal: 20,
-        paddingTop: Platform.OS === "android" ? 20 : 0,
+        paddingHorizontal: SPACING.lg,
+        paddingTop: Platform.OS === "android" ? SPACING.lg : 0,
         justifyContent: "flex-start",
     },
     headerContent: { marginTop: 40 },
-    headerTitle: { fontSize: 24, fontWeight: "bold", color: "#fff" },
-    headerSubtitle: { fontSize: 14, color: "#DBEAFE", marginTop: 5 },
-    scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
+    scrollContent: { paddingHorizontal: SPACING.lg, paddingBottom: 40 },
 
     // Search Card
     searchCard: {
-        backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 20,
-        marginTop: 20,
-        marginBottom: 24,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
+        backgroundColor: COLORS.white,
+        borderRadius: SIZES.radius,
+        padding: SPACING.lg,
+        marginTop: SPACING.lg,
+        marginBottom: SPACING.xl,
+        ...SHADOWS.medium,
         zIndex: 10,
-    },
-    inputGroup: { marginBottom: 16 },
-    mainInput: {
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        borderRadius: 8,
-        padding: 12,
-        fontSize: 14,
-        color: "#374151",
     },
     row: { flexDirection: "row" },
     col: { flex: 1 },
-    label: { fontSize: 13, color: "#6B7280", marginBottom: 6, fontWeight: "500" },
-    dateInputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        height: 44,
+    label: { 
+        fontWeight: "500",
+        color: COLORS.text,
+        marginBottom: SPACING.xs
     },
-    dateInput: { flex: 1, fontSize: 13, color: "#374151", padding: 0 },
     dropdown: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        borderRadius: 8,
-        paddingHorizontal: 10,
+        borderWidth: 2,
+        borderColor: COLORS.border,
+        borderRadius: SIZES.radius,
+        paddingHorizontal: SPACING.sm,
         height: 44,
+        backgroundColor: COLORS.primaryLight,
     },
-    dropdownInput: { flex: 1, fontSize: 14, color: "#374151", padding: 0 },
-    icon: { fontSize: 12, color: "#9CA3AF", marginLeft: 5 },
+    dropdownInput: { 
+        flex: 1, 
+        ...FONTS.body3,
+        color: COLORS.textDark, 
+        padding: 0 
+    },
+    icon: { 
+        ...FONTS.body4,
+        color: COLORS.textLight, 
+        marginLeft: 5 
+    },
 
     // List & Room Card
-    sectionTitle: { fontSize: 20, fontWeight: "bold", color: "#111827", marginBottom: 16 },
-    gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
+    sectionTitle: { 
+        fontWeight: "bold", 
+        color: COLORS.textDark, 
+        marginBottom: SPACING.md 
+    },
+    gridContainer: { 
+        flexDirection: "row", 
+        flexWrap: "wrap", 
+        justifyContent: "space-between" 
+    },
     roomCard: {
         width: CARD_WIDTH,
-        backgroundColor: "#fff",
-        borderRadius: 10,
-        marginBottom: 16,
+        backgroundColor: COLORS.white,
+        borderRadius: SIZES.radiusSmall,
+        marginBottom: SPACING.md,
         borderWidth: 1,
-        borderColor: "#E5E7EB",
+        borderColor: COLORS.border,
         overflow: "hidden",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 2,
+        ...SHADOWS.light,
     },
     roomImage: { width: "100%", height: 120, resizeMode: "cover" },
-    roomContent: { padding: 12 },
-    roomName: { fontSize: 14, fontWeight: "bold", color: "#1F2937", marginBottom: 8 },
-    roomMetaContainer: { marginBottom: 12 },
-    metaText: { fontSize: 11, color: "#6B7280", marginBottom: 4 },
-    footerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 4 },
-    price: { fontSize: 16, fontWeight: "bold", color: "#2563EB" },
-    perNight: { fontSize: 10, color: "#6B7280", fontWeight: "normal" },
-    selectButton: { backgroundColor: "#2563EB", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6 },
-    selectButtonText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+    roomContent: { padding: SPACING.sm },
+    roomName: { 
+        fontWeight: "bold", 
+        color: COLORS.textDark, 
+        marginBottom: SPACING.sm 
+    },
+    roomMetaContainer: { marginBottom: SPACING.sm },
+    footerRow: { 
+        flexDirection: "row", 
+        justifyContent: "space-between", 
+        alignItems: "center", 
+        marginTop: SPACING.xs 
+    },
+    price: { 
+        ...FONTS.h4,
+        fontWeight: "bold", 
+        color: COLORS.primary 
+    },
+    selectButton: { 
+        backgroundColor: COLORS.primary, 
+        paddingVertical: SPACING.xs, 
+        paddingHorizontal: SPACING.sm, 
+        borderRadius: SIZES.radiusSmall,
+        minHeight: 32,
+        shadowOpacity: 0,
+        elevation: 0,
+    },
 
-    // Empty State Styles (Mới thêm)
+    // Empty State
     emptyContainer: {
         alignItems: "center",
         justifyContent: "center",
@@ -323,35 +331,35 @@ const styles = StyleSheet.create({
     },
     emptyIcon: {
         fontSize: 40,
-        marginBottom: 10,
+        marginBottom: SPACING.sm,
     },
     emptyText: {
-        fontSize: 16,
         fontWeight: "bold",
-        color: "#374151",
-        marginBottom: 4,
-    },
-    emptySubText: {
-        fontSize: 14,
-        color: "#9CA3AF",
+        color: COLORS.textDark,
+        marginBottom: SPACING.xs,
     },
     dropdownList: {
         position: "absolute",
         top: 48,
         left: 0,
         right: 0,
-        backgroundColor: "#fff",
+        backgroundColor: COLORS.white,
         borderWidth: 1,
-        borderColor: "#E5E7EB",
-        borderRadius: 8,
+        borderColor: COLORS.border,
+        borderRadius: SIZES.radius,
         zIndex: 999,
         elevation: 10,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
+        ...SHADOWS.medium,
         maxHeight: 180,
         overflow: "hidden",
+    },
+    dropdownItem: {
+        padding: SPACING.sm,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border,
+    },
+    dropdownItemText: {
+        ...FONTS.body3,
+        color: COLORS.textDark,
     }
-
-
 });

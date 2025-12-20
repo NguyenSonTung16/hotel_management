@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  TextInput,
-  Button,
   Image,
   StyleSheet,
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
   Platform,
-  Alert // <--- Đảm bảo đã import Alert
+  Alert
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { calculateNights } from "../utils/calculateNights";
+import AppText from "../components/common/AppText";
+import AppButton from "../components/common/AppButton";
+import AppInput from "../components/common/AppInput";
+import { COLORS, SIZES, FONTS, SHADOWS, SPACING } from "../constants/hotelTheme";
 
 export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
   const [name, setName] = useState("");
@@ -94,7 +95,7 @@ export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={{ paddingTop: 50, paddingHorizontal: 20 }}>
         
-        <Text style={styles.headerTitle}>Booking Details</Text>
+        <AppText variant="title" style={styles.headerTitle}>Booking Details</AppText>
 
         {/* --- CARD INFO --- */}
         <View style={styles.card}>
@@ -103,34 +104,33 @@ export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
             style={styles.cardImage} 
           />
           <View style={styles.cardContent}>
-            <Text style={styles.roomName} numberOfLines={2}>{room.name}</Text>
-            <Text style={styles.roomMeta}>{room.size || "45m²"} • {room.bed || "King Bed"}</Text>
+            <AppText variant="body" style={styles.roomName} numberOfLines={2}>{room.name}</AppText>
+            <AppText variant="caption" color={COLORS.textLight}>{room.size || "45m²"} • {room.bed || "King Bed"}</AppText>
             
             {/* Hiển thị logic Preview */}
-            <Text style={styles.roomMeta}>
+            <AppText variant="caption" color={COLORS.textLight}>
               {capacityPreview} adults
-            </Text>
+            </AppText>
             
-            <Text style={styles.totalPrice}>
-              ${totalPricePreview} <Text style={{ color: '#2563EB', fontWeight: '400', fontSize: 14 }}>/night</Text>
-            </Text>
+            <AppText style={styles.totalPrice}>
+              ${totalPricePreview} <AppText variant="caption" color={COLORS.primary}>/night</AppText>
+            </AppText>
           </View>
         </View>
 
         {/* --- FORM --- */}
         <View style={{ marginTop: 20 }}>
-            <Text style={styles.label}>Thông tin khách hàng</Text>
-            <TextInput
+            <AppInput
+              label="Thông tin khách hàng"
               placeholder="Tên khách"
               value={name}
               onChangeText={setName}
-              style={styles.input}
             />
 
             {/* CHECK-IN INPUT */}
-            <Text style={styles.label}>Ngày nhận phòng</Text>
-            <TouchableOpacity onPress={() => setShowCheckInPicker(true)} style={styles.input}>
-              <Text style={{ color: "#374151" }}>{formatDate(checkIn)}</Text>
+            <AppText variant="caption" style={styles.label}>Ngày nhận phòng</AppText>
+            <TouchableOpacity onPress={() => setShowCheckInPicker(true)} style={styles.dateInputTouchable}>
+              <AppText color={COLORS.textDark}>{formatDate(checkIn)}</AppText>
             </TouchableOpacity>
             
             {showCheckInPicker && (
@@ -144,9 +144,9 @@ export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
             )}
 
             {/* CHECK-OUT INPUT */}
-            <Text style={styles.label}>Ngày trả phòng</Text>
-            <TouchableOpacity onPress={() => setShowCheckOutPicker(true)} style={styles.input}>
-              <Text style={{ color: "#374151" }}>{formatDate(checkOut)}</Text>
+            <AppText variant="caption" style={styles.label}>Ngày trả phòng</AppText>
+            <TouchableOpacity onPress={() => setShowCheckOutPicker(true)} style={styles.dateInputTouchable}>
+              <AppText color={COLORS.textDark}>{formatDate(checkOut)}</AppText>
             </TouchableOpacity>
 
             {showCheckOutPicker && (
@@ -155,16 +155,22 @@ export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
                 mode="date"
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 onChange={onChangeCheckOut}
-                // ĐÃ BỎ: minimumDate={minCheckOutDate}
-                // Chỉ chặn ngày quá khứ để tránh lỗi logic hệ thống
                 minimumDate={new Date()} 
               />
             )}
 
-            <View style={{ marginTop: 20, gap: 10 }}>
-                {/* Logic Validation nằm trong hàm handleConfirm khi bấm nút này */}
-                <Button title="Xác nhận" onPress={handleConfirm} color="#2563EB" />
-                <Button title="Quay lại" color="gray" onPress={onBack} />
+            <View style={{ marginTop: SPACING.xl, gap: SPACING.sm }}>
+                <AppButton 
+                  title="Xác nhận" 
+                  onPress={handleConfirm} 
+                  fullWidth
+                />
+                <AppButton 
+                  title="Quay lại" 
+                  onPress={onBack} 
+                  variant="secondary"
+                  fullWidth
+                />
             </View>
         </View>
 
@@ -174,19 +180,57 @@ export default function BookingScreen({ room, searchData, onConfirm, onBack }) {
 }
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 24, fontWeight: "bold", color: "#000", marginBottom: 16 },
-  card: {
-    backgroundColor: "#EFF6FF", borderRadius: 12, padding: 12,
-    flexDirection: "row", alignItems: "center", borderWidth: 1, borderColor: "#DBEAFE",
+  headerTitle: { 
+    marginBottom: SPACING.md,
+    color: COLORS.textDark
   },
-  cardImage: { width: 80, height: 80, borderRadius: 8, backgroundColor: "#ccc" },
-  cardContent: { flex: 1, marginLeft: 12, justifyContent: "center" },
-  roomName: { fontSize: 16, fontWeight: "bold", color: "#1F2937", marginBottom: 4 },
-  roomMeta: { fontSize: 13, color: "#6B7280", marginBottom: 2 },
-  totalPrice: { fontSize: 18, fontWeight: "bold", color: "#2563EB", marginTop: 4 },
-  label: { fontSize: 14, fontWeight: "600", color: "#374151", marginTop: 12, marginBottom: 4 },
-  input: {
-    padding: 12, backgroundColor: "#F3F4F6", borderRadius: 8,
-    borderWidth: 1, borderColor: "#E5E7EB", justifyContent: 'center'
+  card: {
+    backgroundColor: COLORS.primaryLight, 
+    borderRadius: SIZES.radius, 
+    padding: SPACING.sm,
+    flexDirection: "row", 
+    alignItems: "center", 
+    borderWidth: 1, 
+    borderColor: COLORS.border,
+    ...SHADOWS.medium
+  },
+  cardImage: { 
+    width: 80, 
+    height: 80, 
+    borderRadius: SIZES.radiusSmall, 
+    backgroundColor: COLORS.lightGray 
+  },
+  cardContent: { 
+    flex: 1, 
+    marginLeft: SPACING.sm, 
+    justifyContent: "center" 
+  },
+  roomName: { 
+    fontWeight: "bold", 
+    color: COLORS.textDark, 
+    marginBottom: SPACING.xs 
+  },
+  totalPrice: { 
+    ...FONTS.h3,
+    fontWeight: "bold", 
+    color: COLORS.primary, 
+    marginTop: SPACING.xs 
+  },
+  label: { 
+    fontWeight: "600", 
+    color: COLORS.textDark, 
+    marginTop: SPACING.sm, 
+    marginBottom: SPACING.xs 
+  },
+  dateInputTouchable: {
+    padding: SPACING.sm, 
+    backgroundColor: COLORS.primaryLight, 
+    borderRadius: SIZES.radius,
+    borderWidth: 2, 
+    borderColor: 'transparent', 
+    justifyContent: 'center',
+    height: SIZES.base * 6.25,
+    marginBottom: SPACING.lg,
+    ...SHADOWS.medium
   },
 });
